@@ -1,0 +1,7 @@
+To start the json-server, in the json-server folder execute the following command:
+
+json-server --watch db.json -p 3001 -d 2000 -H ip_address
+
+(replace ip_address with the ip address which will be displayed when you run npm start and the tunnel is ready)
+* this ip address will change when you are connected to different network, so
+if no data is shown in the App, check this ip address.
