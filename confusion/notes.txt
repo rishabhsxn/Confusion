@@ -1,0 +1,122 @@
+
+ERROR: Unable to resolve "react-native-gesture-handler" from "node_modules/@react-navigation/native/src/Scrollables.js"
+SOLUTION:  run the command - 'expo install react-native-gesture-handler'
+
+ERROR: Invariant Violation: The navigation prop is missing for this navigator. In react-navigation 3 you must set up your app container directly.
+        More info: https://reactnavigation.org/docs/en/app-containers.html
+SOLUTION:  Due to major changes in react-navigation, appContainer was necessary. So converted the Menu component into appContainer and 
+           navigationOptions in createStackNavigator have been renamed to defaultNavigationOptions.
+           Mentioned the changes in the MainComponent.js file using CHANGE tag in comments.
+           More details on changes in react-navigation: https://reactnavigation.org/blog/#breaking-changes
+
+ERROR: not able to fetch data from server
+SOLUTION: add your IP in json-server run command: json-server --watch db.json -p 3001 -d 2000 -H 10.54.2.113
+          baseURL: http://10.54.2.113:3001/        (may change, this ip address is shown on the expo terminal above the QR code)
+
+
+ERROR: not able to show date and time in proper format in the Modal
+SOLUTION: use the format -  DD-MM-YYYY hh:mm a  to show as    03-10-2019 06:30 pm
+
+ERROR: having problem to pass a function (which require several arguments) from redux actionCreators to a component which was not directly connected to redux
+SOLUTION: the parent component was connect to redux, so I passed the function as a prop to the child component
+
+ERROR: on deleting a favorite item from the flatlist, the whole flatlist becomes empty, no favorites were shown even though the logic was correctly executed
+SOLUTION: previously I was mutating the data/state from which the flatlist takes data, which causes errors in refreshing/updating the flatlist.
+          In flatlist, it is advised to not directly mutate the original data, but should pass a new data set which now excludes the item to be deleted from the
+          flatlist. Therefore, I modified how the favorites were stored in the store, and then made the reducer return a whole new state, leaving the previous
+          state untouched. Refer to favorite.js
+          Changes have to be made to DishdetailComponent and FavoriteComponent on how they were importing favorites i.e.  
+          favorites: state.favorites converted to:  favorites: state.favorites.fav_id
+
+ERROR: rubberBand funtion was not recognised in the DishdetailComponent, it was called from RenderDish component which was a class component.
+SOLUTION: changed the class component to funtional component and it worked fine.
+          Also changes were made and modal was shift to Dishdetail component from the RenderDish component.
+
+ERROR: all the components which were customized with animations, were only showing animations for the first time they were opened
+SOLUTION:   REVIEW:
+
+          NOT WORKING
+       {* it was happening because the components were not re-rendering when opened multiple times from the drawer.
+          To make them re-render or perform any particular method on opening them, add as listener to their componentDidMount method
+          componentDidMount(){
+            this.props.navigation.addListener('didFocus', ()=>{//method you want to execute} )
+          }
+          in the method you can also type forceUpdate()
+          so in order to do animations again, rerender the component using forceUpdate() *}
+
+ERROR: comments not saved in the redux-persist storage.
+SOLUTION:   REVIEW:
+
+ERROR: import { SecureStore } from 'expo' not working in LoginComponent
+SOLUTION: sudo yarn add expo-secure-store
+          import * as SecureStore from 'expo-secure-store' 
+
+ERROR: the LoginComponent was not rerendering when opened multiple times from the drawer, so the form was not autofilling
+SOLUTION: I used the addListener() in the componentDidMount() and the method to fetch from SecureStore was executed there, whenever the component was in focus
+
+ERROR: in ReservationComponent , import { Permissions } from 'expo' was not working
+SOLUTION: sudo yarn add expo-permissions,    import * as Permissions from 'expo-permissions'
+
+ERROR: in localNotification object, android: { sound: true, vibrate: true} is not working
+SOLUTION:     REVIEW:
+
+ERROR: in ContactComponent, import { MailComposer } from 'expo' is not working
+SOLUTION: sudo yarn add expo-mail-composer,    import * as MailComposer from 'expo-mail-composer'
+
+ERROR: ImagePicker and ImageManipulator not working on import from react native
+SOLUTION: sudo yarn add expo-image-picker expo-image-manipulator
+          import * as ImagePicker from 'expo-image-picker'
+          import * as ImageManipulator from 'expo-image-manipulator'
+
+ERROR: NetInfo is now deprecated from react native core
+SOLUTION: sudo yarn add @react-native-community/netinfo
+          import * as NetInfo from '@react-native-community/netinfo'
+
+ERROR: notifications on iOS not showing
+SOLUTION: The code provided by Dr. Muppala doesn't work because (for whatever reason) presentLocalNotificationAsync() doesn't show notifications 
+          when expo is opened. As we are humans and we don't have fast enough reflexes to close the app in time to actually see it work, we gotta 
+          add a delay with scheduleLocalNotificationAsync(). In the code I added a delay of 10 seconds, which should give you enough time to lock the screen.
+
+          One other modification I made is that I added a listener with Notifications.addListener(this.handleNotification). I don't get why the instructor 
+          didn't do this but it seems to be mandatory to get it to work.
+
+          code: 
+              async obtainNotificationPermission() {
+                let permission = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+                if (permission.status !== 'granted') {
+                  permission = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+                  if (permission.status !== 'granted') {
+                  Alert.alert('Permission not granted to show notifications');
+                  }
+                }
+                Notifications.addListener(this.handleNotification);
+                return permission;
+              }
+
+              async presentLocalNotification(date) {
+                await this.obtainNotificationPermission();
+                Notifications.scheduleLocalNotificationAsync({
+                  title: 'Your Reservation',
+                  body: 'Reservation for '+ date + ' requested',
+                  ios: {
+                    sound: true
+                  },
+                  android: {
+                    sound: true,
+                    vibrate: true,
+                    color: '#512DA8'
+                  }
+                }, {time: new Date().getTime() + 10000})
+              }
+
+              handleNotification() {
+                console.log('Listener OK');
+              }
+
+ERROR: ToastAndroid alternate for iOS devices
+SOLUTION: https://github.com/magicismight/react-native-root-toast
+
+/* let startDate = new Date(date);  
+   let endDate = startDate.setHours(startDate.getHours() + 2);  */
+
+   https://www.coursera.org/learn/react-native/discussions/weeks/4/threads/2sVBPOKXEem5ixKhv2pHqA
